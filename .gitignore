@@ -1,0 +1,8 @@
+# ignore dependencies 
+bower_components/
+node_modules/
+# anything to do with vim
+*.vim
+# database stuff and environment variables
+*.db
+data/

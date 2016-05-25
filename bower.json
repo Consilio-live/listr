@@ -1,0 +1,30 @@
+{
+  "name": "listr",
+  "description": "Automate grocery lists",
+  "main": "index.js",
+  "authors": [
+    "Michael Lee Rhodes <michaelleerhodes@gmail.com>"
+  ],
+  "license": "GPL-3.0",
+  "keywords": [
+    "Grocery",
+    "List",
+    "shopping",
+    "automation",
+    "food"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "bootstrap": "^3.3.6",
+    "angular": "^1.5.5"
+  }
+}

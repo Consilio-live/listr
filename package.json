@@ -1,0 +1,26 @@
+{
+  "name": "listr",
+  "version": "0.0.0",
+  "description": "Automate grocery lists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Grocery",
+    "List",
+    "shopping",
+    "automation",
+    "food"
+  ],
+  "author": "Michael Lee Rhodes <michaelleerhodes@gmail.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "ejs": "^2.4.2",
+    "express": "^4.13.4",
+    "sqlite": "^2.0.2"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
+  }
+}
