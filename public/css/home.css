@@ -1,0 +1,14 @@
+/*
+ * The main prompt that askes the user to login or create an account when 
+ * they aren't logged in.
+ */
+div#login-prompt {
+    background-color:#FAFAFA;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px #E0E0E0;
+}
+
+div#login-prompt button.btn-login {
+    background-color: #ff9800;
+}

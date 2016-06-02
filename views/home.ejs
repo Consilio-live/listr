@@ -3,42 +3,33 @@
     <head>
         <title>Listr: Automate your grocery listing</title>
         <% include includes/head %>
+        <link rel="stylesheet" href="/resources/css/home.css" />
     </head>
     <body id="bootstrap-override">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <div class="row">
-                    <nav class="navbar navbar-default">
-                        <div class="container-fluid">
-                            <div class="navbar-header">
-                                <a class="navbar-brand" href="/">
-                                    Listr
-                                </a>
-                            </div> <!--end navbar header-->
-                            <ul class="nav navbar-nav">
-                                <li><a href="/login">Login</a></li>
-                                <li><a href="/about">About</a></li>
-                                <li><a href="http://michaelrhodes.us">Webmaster</a></li>
-                            </ul> <!--end navbar-nav-->
-                        </div> <!-- end container-fluid-->
-                    </nav> <!-- end navbar-->
-                </div>
+                <% include includes/navbar %> 
                 <main class="row">
                     <div id="login-prompt" class="col-md-offset-4 col-md-4" >
                         <p class="text-center">
-                            <button type="button" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary btn-login">
                                 Login
                             </button>
                         </p>
                         <p class="text-center">
-                            <button type="button" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary btn-login">
                                 Create an Account
                             </button>
                         </p>
                     </div>
                 </main>
-            </div>
-        </div>
+                <footer class="row" id="footer-info">
+                    <p id="copyright" class="text-right">
+                        Copyright &copy; Michael Rhodes 2016.
+                    </p>
+                </footer>
+            </div> <!-- end col-offset --> 
+        </div> <!-- end row -->
 
         <% include includes/scripts %>
         <script src="resources/js/login.js"></script>

@@ -17,10 +17,14 @@
   "author": "Michael Lee Rhodes <michaelleerhodes@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "bookshelf": "^0.9.5",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
     "knex": "^0.11.5",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0",
     "sqlite": "^2.0.2"
   },
   "devDependencies": {
@@ -31,7 +35,8 @@
     "gulp-nodemon": "^2.0.7",
     "gulp-open": "^2.0.0",
     "jasmine-node": "^1.14.5",
-    "jshint": "^2.9.2"
+    "jshint": "^2.9.2",
+    "morgan": "^1.7.0"
   },
   "repository": {
     "type": "git",

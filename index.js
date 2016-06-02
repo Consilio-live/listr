@@ -21,7 +21,8 @@
 
 // misc imports
 let ejs = require('ejs');
-
+let morgan = require('morgan');
+let path = require('path');
 
 // setup express
 let express = require('express');
@@ -29,10 +30,15 @@ let app = express();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 
-// front-end third party libraries will be attached here
-app.use('/assets/', express.static(__dirname + "/bower_components/"));
-// front-end scripts, stylesheets, and images
-app.use('/resources/', express.static(__dirname + "/public/"));
+/* 
+ * Middleware:
+ *      assets/ - front-end third party libraries
+ *      rousources/ - front-end stylesheets, scripts, and images.
+ *      / - we will have morgan attached to log http requests
+ */
+app.use('/assets/', express.static(path.join(__dirname, "bower_components")));
+app.use('/resources/', express.static(path.join(__dirname, "public")));
+app.use(morgan("dev"));
 
 /**
  * Render the launch page of the application

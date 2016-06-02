@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 
 body {
-    background-color:#FFE0B2;
+    background-color:#FAFAFA;
     box-sizing: border-box;
 }
 
@@ -12,7 +12,7 @@ body {
 }
 
 /* the logo inside the nav bar is orange */
-#bootstrap-override a.navbar-brand {
+a#logo {
     color:#ff9800; 
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
@@ -22,19 +22,21 @@ body {
     background-color: #ff9800;
 }
 
-#footer-info {
-    background-color: #FF3D00;
+/* footer for every site; information about the site */
+footer#footer-info {
+    background-color: #ff9800;
     color: #E0F7FA;
     height: 200px;
-    padding: 10px;
+    margin: 10px auto;
+    padding: 6px;
     border-radius: 6px;
+    box-shadow: 0px 0px 10px #E0E0E0;
 }
 
-#login-prompt {
-    background-color:#FAFAFA;
-    padding: 30px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px #E0E0E0;
-
+p#copyright {
+    font-family: "Courier New", Courier, monospace;
 }
+
+
+
 
