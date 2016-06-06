@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 
 body {
-    background-color:#FAFAFA;
+    background-color:#2E7D32;
     box-sizing: border-box;
 }
 
@@ -11,32 +11,27 @@ body {
     background: #FAFAFA;
 }
 
-/* the logo inside the nav bar is orange */
 a#logo {
     color:#ff9800; 
     font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
-/* change the background color to orange when hovered over*/
-#bootstrap-override ul a:hover {
+div#link-collapse ul a {
+    font-family: Rockwell,"Courier Bold",Courier,Georgia,Times,"Times New Roman",serif;
+}
+
+div#link-collapse ul a:hover {
     background-color: #ff9800;
 }
 
 /* footer for every site; information about the site */
-footer#footer-info {
-    background-color: #ff9800;
+footer div.panel {
+    background-color: #FAFAFA;
     color: #E0F7FA;
     height: 200px;
-    margin: 10px auto;
-    padding: 6px;
-    border-radius: 6px;
-    box-shadow: 0px 0px 10px #E0E0E0;
 }
 
 p#copyright {
-    font-family: "Courier New", Courier, monospace;
+    color: #ff9800;
 }
-
-
-
 

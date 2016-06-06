@@ -26,6 +26,7 @@ let path = require('path');
 
 // setup express
 let express = require('express');
+let bodyParser = require("body-parser");
 let app = express();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
@@ -34,18 +35,54 @@ app.set('view engine', 'ejs');
  * Middleware:
  *      assets/ - front-end third party libraries
  *      rousources/ - front-end stylesheets, scripts, and images.
- *      / - we will have morgan attached to log http requests
+ *      / - we will have morgan attached to log http requests and body-parser
+ *          to handle dealing with JSON data on post
  */
 app.use('/assets/', express.static(path.join(__dirname, "bower_components")));
 app.use('/resources/', express.static(path.join(__dirname, "public")));
 app.use(morgan("dev"));
+app.use(bodyParser.json());
 
 /**
  * Render the launch page of the application
  */
 app.get("/", function( req, res ) {
-    res.render('home');
+    res.render('home', {
+        user: true,
+        list: [
+            {
+                id: 1,
+                upc: 1024566,
+                product: "pancakes",
+                quantity: 12,
+                needed: 13
+            },
+            {
+                id: 2,
+                upc: 1024567,
+                product: "bananas",
+                quantity: 4,
+                needed: 3
+            },
+            {
+                id: 3,
+                upc: 1024568,
+                product: "waffles",
+                quantity: 17,
+                needed: 10
+            }
+        ]
+
+    });
 });
+
+/**
+ * Add to the quantity of an object
+ */
+app.post("/add", function( req, res ){
+    console.log(JSON.stringify(req.body));
+});
+
 
 app.listen(PORT, function() {
     console.log("Server process started at locahost:" + PORT);
