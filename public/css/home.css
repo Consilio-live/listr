@@ -24,3 +24,15 @@ div#login-prompt button.btn-primary {
     background: #ff9800;
     outline: 0;
 }
+
+tr.low {
+    background-color: #ef9a9a;
+}
+
+tr.enough {
+    background-color: #A5D6A7;
+}
+
+tr.running-low {
+    background-color: #FFF59D;
+}
