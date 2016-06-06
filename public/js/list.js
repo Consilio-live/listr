@@ -27,22 +27,34 @@
      * red, otherwise mark it as green. If they are the same than mark it as 
      * yellow.
      */
-    function checkQuantity() {
+    function colorizeRows() {
         $("tr").each(function() {
+            var id = $(this).attr("id");
             var $needed = $(this).find("td.needed");
             var $quantity = $(this).find("td.quantity");
             var needNumber = Number.parseInt($needed.text());
             var quantityNumber = Number.parseInt($quantity.text());
 
-            if (needNumber > quantityNumber) {
+            if (needNumber > quantityNumber){
+                $(this).removeClass("enough");
+                $(this).removeClass("running-low");
                 $(this).addClass("low");
             } else if (needNumber === quantityNumber) {
+                $(this).removeClass("low");
+                $(this).removeClass("enough");
                 $(this).addClass("running-low");
-            } else {
+            } else if (needNumber < quantityNumber) {
+                $(this).removeClass("running-low");
+                $(this).removeClass("low");
                 $(this).addClass("enough");
+            } else {
+                // this is the head row
+                $(this).removeClass("running-low");
+                $(this).removeClass("low");
+                $(this).removeClass("enough");
             }
-        });
-    }
+        }); // end tr.each
+    } // end colorizeRows
 
     /**
      * When the user clicks on the add button in an item's row then the new 
@@ -55,7 +67,7 @@
             var oldQuantity = Number.parseInt($(quantitySelector).text(), 10);
             var newQuantity = oldQuantity + 1;
             $(quantitySelector).text(newQuantity);
-            checkQuantity();
+            colorizeRows();
 
             $.ajax({
                 type: "POST",
@@ -76,8 +88,52 @@
         }); // end button.add 
     } // end addToQuantity
 
+    /**
+     * Subtracts one from the quantity, updating the UI, and updating the
+     * db via AJAX.
+     */
+    function removeFromQuantity() {
+        $("button.sub").on("click", function() {
+            var $quantity = $(this).parent().parent().find("td.quantity");
+            console.log($quantity.html());
+            var oldQuantity = Number.parseInt($quantity.text());
+
+            if (oldQuantity > 0) {
+                var newQuantity = oldQuantity - 1;
+                $quantity.text(newQuantity);
+                colorizeRows();
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    url: '/remove',
+                    data: JSON.stringify({
+                        id: $(this).attr("value"),
+                        quantity: newQuantity
+                    }),
+                    error: function(jqXHR, err) {
+                        console.log(err);
+                    }
+                }); // end ajax
+            } else {
+                var rowUpc = $quantity.parent().find("td.upc").text();
+                var warningHtml = "<p>Item " + rowUpc + 
+                    " is already out of stock :(</p>";
+                var $warning = $("div#warning");
+
+                $warning.addClass("alert");
+                $warning.addClass("alert-danger");
+                $warning.attr('role', 'alert');
+                $warning.html(warningHtml);
+
+            }
+        }); // end button.sub
+    } // end removeFromQuantity
+
     $(document).ready(function(){
         addToQuantity();
-        checkQuantity();
+        removeFromQuantity();
+        colorizeRows();
     });// end document.ready
 })();

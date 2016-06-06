@@ -83,6 +83,13 @@ app.post("/add", function( req, res ){
     console.log(JSON.stringify(req.body));
 });
 
+/**
+ * Remove one from the quantity of an item
+ */
+app.post("/remove", function( req, res ){
+    console.log(JSON.stringify(req.body));
+});
+
 
 app.listen(PORT, function() {
     console.log("Server process started at locahost:" + PORT);
