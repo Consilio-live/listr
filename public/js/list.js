@@ -62,11 +62,10 @@
      */
     function addToQuantity() {
         $("button.add").on("click", function() {
-            var itemId = $(this).attr("value");
-            var quantitySelector = "tr#" + itemId + " td.quantity";
-            var oldQuantity = Number.parseInt($(quantitySelector).text(), 10);
+            var $quantity = $(this).parent().parent().find("td.quantity");
+            var oldQuantity = Number.parseInt($quantity.text(), 10);
             var newQuantity = oldQuantity + 1;
-            $(quantitySelector).text(newQuantity);
+            $quantity.text(newQuantity);
             colorizeRows();
 
             $.ajax({
@@ -75,7 +74,7 @@
                 dataType: "json",
                 url: "/add",
                 data: JSON.stringify({
-                    id: itemId,
+                    id: $quantity.parent().attr("id"),
                     quantity: newQuantity
                 }),
                 success: function(data) {
@@ -95,7 +94,6 @@
     function removeFromQuantity() {
         $("button.sub").on("click", function() {
             var $quantity = $(this).parent().parent().find("td.quantity");
-            console.log($quantity.html());
             var oldQuantity = Number.parseInt($quantity.text());
 
             if (oldQuantity > 0) {

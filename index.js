@@ -18,18 +18,27 @@
 /*jslint esversion:6*/
 'use strict';
 // my own modules
+let errors = require('./modules/errors.js');
 
 // misc imports
 let ejs = require('ejs');
-let morgan = require('morgan');
 let path = require('path');
+let knex = require('knex')({
+    client: process.env.DBCLIENT,
+    connection: {
+        filename: process.env.DB
+    }, 
+    useNullAsDefault: false
+});
 
 // setup express
 let express = require('express');
 let bodyParser = require("body-parser");
+let morgan = require('morgan');
 let app = express();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
+
 
 /* 
  * Middleware:
@@ -46,41 +55,37 @@ app.use(bodyParser.json());
 /**
  * Render the launch page of the application
  */
-app.get("/", function( req, res ) {
-    res.render('home', {
-        user: true,
-        list: [
-            {
-                id: 1,
-                upc: 1024566,
-                product: "pancakes",
-                quantity: 12,
-                needed: 13
-            },
-            {
-                id: 2,
-                upc: 1024567,
-                product: "bananas",
-                quantity: 4,
-                needed: 3
-            },
-            {
-                id: 3,
-                upc: 1024568,
-                product: "waffles",
-                quantity: 17,
-                needed: 10
-            }
-        ]
-
+app.get("/", function( req, res, next ) {
+    knex.select().from('Item')
+    .then(function(data) {
+        res.render('home', {
+            user: true,
+            list: data
+        });
+    })
+    .catch(function(error) {
+        let error500 = new Error('Our server has ran into some trouble');
+        error500.status = 500;
+        console.error(error500.stack);
+        next(error500);
     });
-});
+}); // end app.get('/')
 
 /**
  * Add to the quantity of an object
  */
 app.post("/add", function( req, res ){
-    console.log(JSON.stringify(req.body));
+    let id = req.body.id;
+
+    knex("Item").select().where('id', id)
+    .then(function(row) {
+        let onHand = row[0].onHand + 1;
+        console.log(row);
+        knex('Item').update('onHand', onHand).where('id', id);
+    })
+    .catch(function(error) {
+        console.error(error);
+    });
 });
 
 /**
@@ -89,6 +94,10 @@ app.post("/add", function( req, res ){
 app.post("/remove", function( req, res ){
     console.log(JSON.stringify(req.body));
 });
+
+// error handling middleware
+app.use(errors.error404);
+app.use(errors.errorHandler);
 
 
 app.listen(PORT, function() {

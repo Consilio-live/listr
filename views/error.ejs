@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= status %> Error</title>
+        <% include includes/head %>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <% include includes/navbar %>
+
+                <% if (err) { %>
+                <main class="row">
+                    <div class="col-md-offset-4 col-md-4" >
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h1>
+                                    <small><%= status %></small> <%= err %>
+                                </h1>
+                            </div>
+                            <div class="panel-body">
+                                <p class="lead">
+                                    <%= resolution  %> 
+                                </p>
+                            </div>
+                            <div class="panel-footer">
+                                Feel free to report this error to 
+                                <a href="mailto:michaelleerhodes@gmail.com?subject=Bug%20report">
+                                    Michael Rhodes</a>, 
+                                the webmaster of this site.
+
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <% } %>
+
+                <% include includes/footer %>
+            </div>
+        </div>
+        <% include includes/scripts %>
+
+    </body>
+</html>
