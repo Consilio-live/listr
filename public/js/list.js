@@ -21,117 +21,50 @@
 
     var app = angular.module("listr", [  ]);
 
-    /** 
-     * Goes through each row of the list and checks if the quantity of the item 
-     * is lower than what is needed of it. If it is less than mark the row as
-     * red, otherwise mark it as green. If they are the same than mark it as 
-     * yellow.
-     */
-    function colorizeRows() {
-        $("tr").each(function() {
-            var id = $(this).attr("id");
-            var $needed = $(this).find("td.needed");
-            var $quantity = $(this).find("td.quantity");
-            var needNumber = Number.parseInt($needed.text());
-            var quantityNumber = Number.parseInt($quantity.text());
+    app.controller('item', ['$scope', '$http', '$log',
+                            function ($scope, $http, $log) {
+        /**
+         * Load the list from the api using AJAX
+         */
+        angular.element(document).ready(function () {
+            $http.get('/list').then(function(response) {
+                // The data should be an JSON array
+                var listArray = JSON.parse(response.data);
+                $scope.list = listArray;
+            }).catch(function(err) {
+                $log.error(err.statusText);
+                $log.error(err.data);
+            });
+        }); // end angular.element
 
-            if (needNumber > quantityNumber){
-                $(this).removeClass("enough");
-                $(this).removeClass("running-low");
-                $(this).addClass("low");
-            } else if (needNumber === quantityNumber) {
-                $(this).removeClass("low");
-                $(this).removeClass("enough");
-                $(this).addClass("running-low");
-            } else if (needNumber < quantityNumber) {
-                $(this).removeClass("running-low");
-                $(this).removeClass("low");
-                $(this).addClass("enough");
-            } else {
-                // this is the head row
-                $(this).removeClass("running-low");
-                $(this).removeClass("low");
-                $(this).removeClass("enough");
-            }
-        }); // end tr.each
-    } // end colorizeRows
+        /**
+         * Send that an item's quantity has been incremented to
+         * the database.
+         * @param {Object} item - the item to be sent back to the database
+         */
+        $scope.sendAdd = function ( item ) {
+            $http.post('/add', item).then(function ( response ) {
+                $scope.list = JSON.parse(response.data);
+            }).catch(function ( err ) {
+                $log.error(err.statusText);
+                $log.error(err.data);
+            });
+        }; // end sendAdd
 
-    /**
-     * When the user clicks on the add button in an item's row then the new 
-     * quantity is updated in the UI and POSTed via AJAX to the server as JSON.
-     */
-    function addToQuantity() {
-        $("button.add").on("click", function() {
-            var $quantity = $(this).parent().parent().find("td.quantity");
-            var oldQuantity = Number.parseInt($quantity.text(), 10);
-            var newQuantity = oldQuantity + 1;
-            $quantity.text(newQuantity);
-            colorizeRows();
+        /**
+         * Sends to the backend api that an item's onHand has just
+         * been decremented
+         * @param {Object} item - the item to be sent back to the database
+         */
+        $scope.sendSub = function( item ) {
+            $http.post('/sub', item).then(function ( response ) {
+                $scope.list = JSON.parse(response.data);
+            }).catch(function ( err ) {
+                $log.error(err.statusText);
+                $log.error(err.data);
+            });
+        }; // end sendSub
 
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                dataType: "json",
-                url: "/add",
-                data: JSON.stringify({
-                    id: $quantity.parent().attr("id"),
-                    quantity: newQuantity
-                }),
-                success: function(data) {
-                    console.log(JSON.stringify(data));
-                },
-                error: function(jqXHR, err) {
-                    console.log(err);
-                }
-            }); // end ajax
-        }); // end button.add 
-    } // end addToQuantity
+    }]); // end controller
 
-    /**
-     * Subtracts one from the quantity, updating the UI, and updating the
-     * db via AJAX.
-     */
-    function removeFromQuantity() {
-        $("button.sub").on("click", function() {
-            var $quantity = $(this).parent().parent().find("td.quantity");
-            var oldQuantity = Number.parseInt($quantity.text());
-
-            if (oldQuantity > 0) {
-                var newQuantity = oldQuantity - 1;
-                $quantity.text(newQuantity);
-                colorizeRows();
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json",
-                    dataType: "json",
-                    url: '/remove',
-                    data: JSON.stringify({
-                        id: $(this).attr("value"),
-                        quantity: newQuantity
-                    }),
-                    error: function(jqXHR, err) {
-                        console.log(err);
-                    }
-                }); // end ajax
-            } else {
-                var rowUpc = $quantity.parent().find("td.upc").text();
-                var warningHtml = "<p>Item " + rowUpc + 
-                    " is already out of stock :(</p>";
-                var $warning = $("div#warning");
-
-                $warning.addClass("alert");
-                $warning.addClass("alert-danger");
-                $warning.attr('role', 'alert');
-                $warning.html(warningHtml);
-
-            }
-        }); // end button.sub
-    } // end removeFromQuantity
-
-    $(document).ready(function(){
-        addToQuantity();
-        removeFromQuantity();
-        colorizeRows();
-    });// end document.ready
-})();
+})(); // end main IIFE

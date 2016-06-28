@@ -66,37 +66,42 @@
                                     Subtract
                                 </th>
                             </thead>
-                            <tbody>
-                                <% for(var i = 0; i < list.length; i++) { %>
-                                <tr id="<%=list[i].id%>">
-                                    <td class="upc">
-                                        <%= list[i].upc %>
+                            <tbody ng-controller="item">
+                                <tr ng-repeat="item in list">
+                                    <td class="upc" ng-cloak>
+                                        {{ item.upc }}
                                     </td>
-                                    <td class="product">
-                                        <%= list[i].product %>
+
+                                    <td class="product" ng-cloak>
+                                        {{ item.product }}
                                     </td>
-                                    <td class="quantity">
-                                        <%= list[i].onHand %>
+
+                                    <td class="quantity" ng-cloak>
+                                        {{ item.onHand }}
                                     </td>
-                                    <td class="needed">
-                                        <%= list[i].needed %>
+
+                                    <td class="needed" ng-cloak>
+                                        {{ item.needed }}
                                     </td>
+
                                     <td>
                                         <button name="add" 
-                                            value="<%= list[i].id %>"
-                                            class="add">
+                                                class="add"
+                                                ng-click="sendAdd(item)">
                                             Add
                                         </button>
                                     </td>
+
                                     <td>
                                         <button name="sub" 
-                                            value="<%= list[i].id %>"
-                                            class="sub">
+                                                class="sub"
+                                                ng-click="sendSub(item)"
+                                                >
                                             Subtract
                                         </button>
                                     </td>
+
                                 </tr>
-                                <% } %>
                             </tbody>
                         </table>
                     </div>

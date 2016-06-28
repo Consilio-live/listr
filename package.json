@@ -19,15 +19,13 @@
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.1",
-    "bookshelf": "^0.9.5",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
     "knex": "^0.11.5",
+    "mysql": "^2.11.1",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
-    "passport-local": "^1.0.0",
-    "quagga": "^0.11.1",
-    "sqlite": "^2.0.2"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "browser-sync": "^2.12.8",

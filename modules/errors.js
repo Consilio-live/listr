@@ -43,6 +43,22 @@ let error404 = {
 };
 
 /**
+ * Sets up an error object with the given message and status
+ * @param {string} message the backend description of the error
+ * @param {number} status  the http error status code associated
+ *                         with that error
+ * @return {Object} the error object representing this error.
+ */
+function setupError(message, status){
+    let error = new Error(message);
+    error.status = status;
+    console.error(error.message);
+    console.error(error.stack);
+
+    return error;
+}
+
+/**
  * Error handler: A generic error handler for development purposes. It logs
  * the stack trace to the console, and renders error.ejs with the error 
  * message as the body.
@@ -55,10 +71,13 @@ let error404 = {
  */
 function errorHandler( err, req, res, next ) {
     console.error(err.stack);
-    if (err.status === 500) {
-        res.status(err.status).render('error', error500);
-    } else {
-        next(err);
+    switch (err.status) {
+        case 500:
+            res.status(err.status).render('error', error500);
+            break;
+        default:
+            next(err);
+            break;
     }
 }
 
@@ -76,6 +95,7 @@ function error404Handler( req, res, next ) {
 
 module.exports = {
     errorHandler: errorHandler,
-    error404: error404Handler
+    error404: error404Handler,
+    setupError: setupError
 };
 
