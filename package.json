@@ -1,10 +1,9 @@
 {
   "name": "listr",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Automate grocery lists",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-node spec/ --autotest --watch ./",
     "start": "gulp"
   },
   "keywords": [
@@ -34,7 +33,6 @@
     "gulp-jshint": "^2.0.1",
     "gulp-nodemon": "^2.0.7",
     "gulp-open": "^2.0.0",
-    "jasmine-node": "^1.14.5",
     "jshint": "^2.9.2",
     "morgan": "^1.7.0"
   },
