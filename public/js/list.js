@@ -19,10 +19,24 @@
 (function() {
     'use strict';
 
-    var app = angular.module("listr", [  ]);
+    var app = angular.module("listr", [ 'ngRoute' ]);
+    
+    app.config(function ($routeProvider) {
+        $routeProvider.when('/', {
+            templateUrl: 'resources/html/table.html',
+            controller: 'item'
+        });
+    });
 
     app.controller('item', ['$scope', '$http', '$log',
                             function ($scope, $http, $log) {
+                                
+        // form variables
+        $scope.formUPC = 0;
+        $scope.formProduct = "";
+        $scope.formOnHand = 0;
+        $scope.formNeeded = 0;
+      
         /**
          * Load the list from the api using AJAX
          */
@@ -35,6 +49,12 @@
                 $log.error(err.statusText);
                 $log.error(err.data);
             });
+            
+            angular.element('#formModal').on('shown.bs.modal', 
+                                             function () {
+                angular.element("#upc").focus(); 
+            });
+            
         }); // end angular.element
 
         /**
@@ -64,6 +84,29 @@
                 $log.error(err.data);
             });
         }; // end sendSub
+                                
+        /**
+         * The object to be used in the ngClass directive on a
+         * div.row-color element. 
+         * 
+         * @param {Object} item - The data representing an item 
+         *                      returned from the database
+         */
+        $scope.colorRows = function ( item ) {
+            var rowClasses = {  };
+            
+            rowClasses.low = item.onHand < item.needed;
+            rowClasses.runningLow = item.onHand === item.needed;
+            rowClasses.enough = item.onHand > item.needed;
+            
+            return rowClasses;
+        }; // end colorRows;
+                                
+        $scope.addItem = function () {
+            
+            console.log("clicked");
+            angular.element("#formModal").modal('hide');
+        }; // end addItem
 
     }]); // end controller
 

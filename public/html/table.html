@@ -1,0 +1,155 @@
+<main class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Your Shopping List
+        </div>
+        <!-- where the form for creating a entry is -->
+        <div class="panel-body">
+
+            <button class="btn"
+                    type="button"
+                    data-toggle="modal"
+                    data-target="#formModal"
+                    id="addItem">
+                <span class="glyphicon glyphicon-plus">
+                </span>
+            </button>
+
+            <div class="modal fade" id="formModal"
+                 tabindex="-1" role="dialog" 
+                 labelledby="formModalLabel">
+
+                <div class="modal-dialog" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">
+                                    &times;
+                                </span>
+                            </button>
+                            <h4 class="modal-title"  
+                                id="formModalLabel">
+                                Add a new item to 
+                                your list!
+                            </h4>
+
+                        </div> <!-- end modal-header -->
+                        <div class="modal-body">
+
+                            <form>
+                                <div class="form-group">
+                                    <label for="upc">
+                                        UPC
+                                    </label>
+                                    <input type="number" class="form-control" id="upc" ng-model="formUPC" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="product">
+                                        Product
+                                    </label>
+                                    <input type="text" class="form-control" id="product" ng-model="formProduct" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="onHand">
+                                        Quantity
+                                    </label> 
+                                    <input type="number" class="form-control" id="onHand" ng-model="formOnHand" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="needed">
+                                        Needed
+                                    </label> 
+                                    <input type="number" class="form-control" id="needed" ng-model="formNeeded" />
+                                </div>
+
+                                <button type="submit" class="btn" id="addSubmit" ng-click="addItem()">
+                                    Submit
+                                </button>
+                            </form> 
+                        </div> 
+                    </div> <!-- end modal-content -->
+                </div><!-- end modal-dialog -->
+
+            </div><!-- end formModal -->
+
+        </div>
+        <!-- each entry in the shopping list -->
+        <table class="table">
+            <thead>
+                <th>
+                    UPC
+                </th>
+                <th>
+                    Product
+                </th>
+                <th>
+                    Quantity 
+                </th>
+                <th>
+                    Needed
+                </th>
+                <th>
+                    Maintain
+                </th>
+            </thead>
+            <tbody ng-controller="item">
+                <tr ng-repeat="item in list">
+
+                    <div class="row-color" ng-class="{low: item.onHand < item.needed, 'running-low': item.onHand === item.needed, enough: item.onHand > item.needed}">
+
+                        <td class="upc" ng-cloak>
+                            {{ item.upc }}
+                        </td>
+
+                        <td class="product" ng-cloak>
+                            {{ item.product }}
+                        </td>
+
+                        <td class="quantity" ng-cloak>
+                            {{ item.onHand }}
+                        </td>
+
+                        <td class="needed" ng-cloak>
+                            {{ item.needed }}
+                        </td>
+
+                        <td class="maintain">
+                            <div class="btn-group"
+                                 role="group">
+                                <button name="add" 
+                                        class="add btn btn-default"
+                                        type="button"
+                                        ng-click="sendAdd(item)">
+                                    Add
+                                </button>
+
+                                <button name="sub" 
+                                        class="sub btn btn-default"
+                                        type="button"
+                                        ng-click="sendSub(item)"
+                                        >
+                                    Subtract
+                                </button>
+
+                                <button type="button" 
+                                        class="btn btn-default"
+                                        type="button">
+
+                                    <span class="glyphicon glyphicon-trash">
+                                    </span>
+                                </button>
+                            </div> <!-- end .btn-group -->
+                        </td> <!-- end .maintain-->
+
+                    </div><!-- end .row-color -->
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>

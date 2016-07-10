@@ -25,14 +25,26 @@ div#login-prompt button.btn-primary {
     outline: 0;
 }
 
-tr.low {
+div.low {
     background-color: #ef9a9a;
 }
 
-tr.enough {
+div.enough {
     background-color: #A5D6A7;
 }
 
-tr.running-low {
+div.running-low {
     background-color: #FFF59D;
+}
+
+div.panel-body button#addItem {
+    background-color: #ff9800;
+    float: right;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: .5px solid #E65100;
+}
+
+div.panel-body button#addItem:hover {
+    background-color: #FF6F00;
 }
