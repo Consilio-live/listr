@@ -103,7 +103,7 @@
         }; // end colorRows;
                                 
         $scope.addItem = function () {
-            
+
             console.log("clicked");
             angular.element("#formModal").modal('hide');
         }; // end addItem

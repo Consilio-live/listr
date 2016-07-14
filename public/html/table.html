@@ -1,3 +1,4 @@
+
 <main class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -40,34 +41,43 @@
                         </div> <!-- end modal-header -->
                         <div class="modal-body">
 
-                            <form>
-                                <div class="form-group">
+                            <form name="item" ng-submit="addItem()" novalidate>
+                                <div class="form-group" ng-class="{'has-error': item.upc.$invalid && !item.upc.$prestine}">
                                     <label for="upc">
                                         UPC
                                     </label>
-                                    <input type="number" class="form-control" id="upc" ng-model="formUPC" />
+                                    <input type="text" class="form-control" name="upc" id="upc" ng-model="formUPC" ng-pattern="/^\d+$/" />
+                                    <p class="help-block" ng-hide="item.upc.$valid">
+                                        Needs to be an integer.
+                                    </p>
                                 </div>
                                 <div class="form-group">
                                     <label for="product">
                                         Product
                                     </label>
-                                    <input type="text" class="form-control" id="product" ng-model="formProduct" />
+                                    <input type="text" name="product" class="form-control" id="product" ng-model="formProduct" required/>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{'has-error': item.onHand.$invalid && !item.onHand.$prestine}">
                                     <label for="onHand">
                                         Quantity
                                     </label> 
-                                    <input type="number" class="form-control" id="onHand" ng-model="formOnHand" />
+                                    <input type="text" name="onHand" class="form-control" id="onHand" ng-model="formOnHand" ng-pattern="/^\d+$/" required/>
+                                    <p class="help-block" ng-hide="item.onHand.$valid">
+                                        Needs to be an integer.
+                                    </p>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{'has-error': !item.needed.$valid}">
                                     <label for="needed">
                                         Needed
                                     </label> 
-                                    <input type="number" class="form-control" id="needed" ng-model="formNeeded" />
+                                    <input type="number" class="form-control" id="needed" name="needed" ng-model="formNeeded" ng-pattern="/\d+/" required/>
+                                    <p class="help-block" ng-hide="item.needed.$valid">
+                                        Needs to be an integer.
+                                    </p>
                                 </div>
 
-                                <button type="submit" class="btn" id="addSubmit" ng-click="addItem()">
+                                <button type="submit" class="btn" id="addSubmit" ng-show="item.needed.$valid && item.onHand.$valid && item.upc.$valid && !item.product.$pristine">
                                     Submit
                                 </button>
                             </form> 
