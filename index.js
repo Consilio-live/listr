@@ -33,6 +33,8 @@ let knex = require('knex')({
     }
 });
 
+let sql = require('./modules/sql.js')(knex);
+
 // setup express
 let express = require('express');
 let bodyParser = require("body-parser");
@@ -41,27 +43,7 @@ let app = express();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 
-/**
- * respond with the resulting rows of the sql query respresented 
- * with a JSON array 
- * 
- * @param {object} res  - the express response object
- * @param {Array}  rows - an array of objects representing the 
- *                        result of the sql query 
- */
-function sendRows ( res, rows ) {
-    let rowJSON = JSON.stringify(rows);
-    res.json(rowJSON);
-}
 
-/**
- * Get the list of user with the id 'userId'
- * @param   {number} userId - id of user 
- * @returns {object} promise based knex query object. 
- */
-function getList ( userId ) {
-    return knex.select().from("Item");
-}
 /* 
  * Middleware:
  *      assets/ - front-end third party libraries
@@ -98,8 +80,7 @@ app.get("/", function( req, res, next ) {
  */
 app.get('/list/:userId', function( req, res, next ) {
     knex.select().from('Item').then(function( data ) {
-        let listArray = JSON.stringify(data);
-        res.json(listArray);
+        sql.sendRows(res, data); 
     }).catch(function(error) {
         let error500 = errors.setupError(`
             Error retrieving the user's list from the database
@@ -122,7 +103,7 @@ app.get('/list/:userId', function( req, res, next ) {
 //        product: item.product,
 //        onHand: item.onHand,
 //        needed: item.needed
-//    }).then(getList).then(function ( rows ) {
+//    }).then(sql.getList).then(function ( rows ) {
 //        sendRows(res, rows);
 //    }).catch(function ( err ) {
 //        let error500 = errors.setupError(`
@@ -139,7 +120,7 @@ app.get("/item/:id", function ( req, res, next ) {
     let itemId = req.params.id;
     
     knex.select().from('Item').where('id', itemId).then(function ( row ) {
-        sendRows(res, row);
+        sql.sendRows(res, row);
     }).catch(function ( err ) {
         let error500 = errors.setupError(`
             Error adding retrieving item with the id ${ itemId }
@@ -166,8 +147,8 @@ app.post("/item/:id", function (req, res, next) {
     
     knex("Item").where('id', itemId).update({
         onHand: itemOnHand 
-    }).then(getList).then(function ( rows ) {
-        sendRows(res, rows); 
+    }).then(sql.getList).then(function ( rows ) {
+        sql.sendRows(res, rows); 
     }).catch(function ( err ) {
         let error500 = errors.setupError(`
             Error editing item with the id ${ itemId }
@@ -184,9 +165,9 @@ app.delete("/item/:id", function ( req, res, next ){
     let itemId = req.params.id;
     
     knex('Item').where('id', itemId).del().then(
-        getList
+        sql.getList
     ).then(function ( rows ) {
-        sendRows(res, rows); 
+        sql.sendRows(res, rows); 
     }).catch(function ( err ) {
         let error500 = errors.setupError(`
             Error editing item with the id ${ itemId }
