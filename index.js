@@ -41,6 +41,27 @@ let app = express();
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 
+/**
+ * respond with the resulting rows of the sql query respresented 
+ * with a JSON array 
+ * 
+ * @param {object} res  - the express response object
+ * @param {Array}  rows - an array of objects representing the 
+ *                        result of the sql query 
+ */
+function sendRows ( res, rows ) {
+    let rowJSON = JSON.stringify(rows);
+    res.json(rowJSON);
+}
+
+/**
+ * Get the list of user with the id 'userId'
+ * @param   {number} userId - id of user 
+ * @returns {object} promise based knex query object. 
+ */
+function getList ( userId ) {
+    return knex.select().from("Item");
+}
 /* 
  * Middleware:
  *      assets/ - front-end third party libraries
@@ -73,11 +94,11 @@ app.get("/", function( req, res, next ) {
 }); // end app.get('/')
 
 /**
- * REST api for getting the user's own list
+ * api for getting the list of the user with id 'userId'
  */
-app.get('/list', function( req, res, next ) {
+app.get('/list/:userId', function( req, res, next ) {
     knex.select().from('Item').then(function( data ) {
-        var listArray = JSON.stringify(data);
+        let listArray = JSON.stringify(data);
         res.json(listArray);
     }).catch(function(error) {
         let error500 = errors.setupError(`
@@ -85,54 +106,141 @@ app.get('/list', function( req, res, next ) {
         `, 500);
         next(error500);
     });
-}) // end app.get('/list')
+}); // end app.get('/list')
+
+// TODO: test this stuff.
+///**
+// * API for adding a new Item onto the list.
+// */
+//app.post('/list/:userId', function( req, res, next ) {
+//    let item = req.body;
+//    
+//    console.log(item);
+//    
+//    knex('Item').insert({
+//        upc: item.upc,
+//        product: item.product,
+//        onHand: item.onHand,
+//        needed: item.needed
+//    }).then(getList).then(function ( rows ) {
+//        sendRows(res, rows);
+//    }).catch(function ( err ) {
+//        let error500 = errors.setupError(`
+//            Error adding new item to the user's list
+//        `, 500);
+//        next(error500);
+//    });
+//}); // end app.post(list)
 
 /**
- * Add to the quantity of an object
+ * API for getting the metadata of an item with the id of 'id'
  */
-app.post("/add", function ( req, res, next ){
-    let item = req.body;
-    item.onHand += 1;
-
-    knex("Item").where('id', '=', item.id.toString()).update({
-        onHand: item.onHand
-    }).then(function () {
-        return knex.select().from("Item")
-    }).then(function ( rows ) {
-        let rowJSON = JSON.stringify(rows);
-        res.json(rowJSON);
+app.get("/item/:id", function ( req, res, next ) {
+    let itemId = req.params.id;
+    
+    knex.select().from('Item').where('id', itemId).then(function ( row ) {
+        sendRows(res, row);
     }).catch(function ( err ) {
         let error500 = errors.setupError(`
-            Error adding to the quantity of an item in the user's
-            list
+            Error adding retrieving item with the id ${ itemId }
+        `, 500);
+        next(error500);
+    })
+});
+
+/**
+ * API for updating the quantity of an item with the id of 'id'.
+ * The body of the request should have the type of change which
+ * could be either add or subtract.
+ */
+app.post("/item/:id", function (req, res, next) {
+    let itemId = req.params.id;
+    let itemOnHand = req.body.onHand;
+    let change = req.body.change;
+    
+    if (change === "add") {
+        itemOnHand += 1;
+    } else {
+        itemOnHand -= 1;
+    }
+    
+    knex("Item").where('id', itemId).update({
+        onHand: itemOnHand 
+    }).then(getList).then(function ( rows ) {
+        sendRows(res, rows); 
+    }).catch(function ( err ) {
+        let error500 = errors.setupError(`
+            Error editing item with the id ${ itemId }
+        `, 500);
+        next(error500);
+    });
+    
+});
+
+/**
+ * delete the item with the id of 'id' from the database 
+ */
+app.delete("/item/:id", function ( req, res, next ){
+    let itemId = req.params.id;
+    
+    knex('Item').where('id', itemId).del().then(
+        getList
+    ).then(function ( rows ) {
+        sendRows(res, rows); 
+    }).catch(function ( err ) {
+        let error500 = errors.setupError(`
+            Error editing item with the id ${ itemId }
         `, 500);
         next(error500);
     });
 });
 
-/**
- * Remove one from the quantity of an item
- */
-app.post("/sub", function( req, res, next ){
-    let item = req.body;
-    item.onHand -= 1;
-
-    knex("Item").where('id', '=', item.id.toString()).update({
-        onHand: item.onHand
-    }).then(function () {
-        return knex.select().from("Item")
-    }).then(function ( rows ) {
-        let rowJSON = JSON.stringify(rows);
-        res.json(rowJSON);
-    }).catch(function ( err ) {
-        let error500 = errors.setupError(`
-            Error subtracting to the quantity of an item in the
-            user's list
-        `, 500);
-        next(error500);
-    })
-
-});
+///**
+// * Add to the quantity of an object
+// */
+//app.post("/add", function ( req, res, next ){
+//    let item = req.body;
+//    item.onHand += 1;
+//
+//    knex("Item").where('id', '=', item.id.toString()).update({
+//        onHand: item.onHand
+//    }).then(function () {
+//        return knex.select().from("Item")
+//    }).then(function ( rows ) {
+//        let rowJSON = JSON.stringify(rows);
+//        res.json(rowJSON);
+//    }).catch(function ( err ) {
+//        let error500 = errors.setupError(`
+//            Error adding to the quantity of an item in the user's
+//            list
+//        `, 500);
+//        next(error500);
+//    });
+//});
+//
+///**
+// * Remove one from the quantity of an item
+// */
+//app.post("/sub", function( req, res, next ){
+//    let item = req.body;
+//    item.onHand -= 1;
+//
+//    knex("Item").where('id', '=', item.id.toString()).update({
+//        onHand: item.onHand
+//    }).then(function () {
+//        return knex.select().from("Item")
+//    }).then(function ( rows ) {
+//        let rowJSON = JSON.stringify(rows);
+//        res.json(rowJSON);
+//    }).catch(function ( err ) {
+//        let error500 = errors.setupError(`
+//            Error subtracting to the quantity of an item in the
+//            user's list
+//        `, 500);
+//        next(error500);
+//    })
+//
+//});
 
 // error handling middleware
 app.use(errors.error404);

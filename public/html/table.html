@@ -171,20 +171,25 @@
                             <button name="add" 
                                     class="add btn btn-default"
                                     type="button"
-                                    ng-click="sendAdd(item)">
+                                    ng-click="changeQuantity(item,
+                                              'add')"
+                                    >
                                 Add
                             </button>
 
                             <button name="sub" 
                                     class="sub btn btn-default"
                                     type="button"
-                                    ng-click="sendSub(item)"
+                                    ng-click="changeQuantity(item,
+                                              'sub')"
                                     >
                                 Subtract
                             </button>
 
                             <button type="button" 
-                                    class="btn btn-default">
+                                    class="btn btn-default"
+                                    ng-click="deleteItem(item.id)"
+                                    >
 
                                 <span class="glyphicon glyphicon-trash">
                                 </span>

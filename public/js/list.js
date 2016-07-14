@@ -44,7 +44,7 @@
          * Load the list from the api using AJAX
          */
         angular.element(document).ready(function () {
-            $http.get('/list').then(function(response) {
+            $http.get('/list/1').then(function(response) {
                 // The data should be an JSON array
                 var listArray = JSON.parse(response.data);
                 $scope.list = listArray;
@@ -64,38 +64,46 @@
         ////////////////////////////////////////////////////////////
         ///                 MAINTENANCE BUTTONS                  ///
         ////////////////////////////////////////////////////////////
-                                
-        /**
-         * Send that an item's quantity has been incremented to
-         * the database.
-         * @param {Object} item - the item to be sent back to the database
-         */
-        $scope.sendAdd = function ( item ) {
-            $http.post('/add', item).then(function ( response ) {
-                $scope.list = JSON.parse(response.data);
-            }).catch(function ( err ) {
-                $log.error(err.statusText);
-                $log.error(err.data);
-            });
-        }; // end sendAdd
 
         /**
          * Sends to the backend api that an item's onHand has just
          * been decremented
          * @param {Object} item - the item to be sent back to the database
          */
-        $scope.sendSub = function( item ) {
-            $http.post('/sub', item).then(function ( response ) {
+        $scope.changeQuantity = function( item, change ) {
+            var location = '/item/' + item.id;
+            var messageBody = {
+                change: change, 
+                onHand: item.onHand
+            };
+            
+            $http.post(location, messageBody).then(
+                function ( response ) {
                 $scope.list = JSON.parse(response.data);
             }).catch(function ( err ) {
                 $log.error(err.statusText);
                 $log.error(err.data);
             });
-        }; // end sendSub
+        }; // end changeQuantity
+        
+        /**
+         * Delete an item from the database
+         * 
+         * @param {number} item - the id of the item.
+         */
+        $scope.deleteItem = function ( item ) {
+            var location = "/item/" + item;
+            
+            $http.delete(location).then(function ( res ) {
+                $scope.list = JSON.parse(res.data);
+            }).catch(function ( err ) {
+                $log.error(err.statusText);
+                $log.error(err.data);
+            });
+        };
                                 
                                 
         $scope.addItem = function () {
-
             console.log("clicked");
             angular.element("#formModal").modal('hide');
         }; // end addItem
