@@ -1,4 +1,3 @@
-
 <main class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -42,11 +41,19 @@
                         <div class="modal-body">
 
                             <form name="item" ng-submit="addItem()" novalidate>
-                                <div class="form-group" ng-class="{'has-error': item.upc.$invalid && !item.upc.$prestine}">
+                                <div class="form-group" 
+                                     ng-class="{'has-error': item.upc.$invalid && !item.upc.$prestine}"
+                                     >
                                     <label for="upc">
                                         UPC
                                     </label>
-                                    <input type="text" class="form-control" name="upc" id="upc" ng-model="formUPC" ng-pattern="/^\d+$/" />
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="upc" 
+                                           id="upc" 
+                                           placeholder="0"
+                                           ng-model="formUPC" 
+                                           ng-pattern="/^\d+$/" />
                                     <p class="help-block" ng-hide="item.upc.$valid">
                                         Needs to be an integer.
                                     </p>
@@ -55,29 +62,60 @@
                                     <label for="product">
                                         Product
                                     </label>
-                                    <input type="text" name="product" class="form-control" id="product" ng-model="formProduct" required/>
+                                    <input type="text" 
+                                           name="product"
+                                           class="form-control" 
+                                           id="product" 
+                                           ng-model="formProduct"
+                                           required/>
                                 </div>
-                                <div class="form-group" ng-class="{'has-error': item.onHand.$invalid && !item.onHand.$prestine}">
+                                <div class="form-group" 
+                                     ng-class="{
+                                               'has-error': item.onHand.$invalid && !item.onHand.$pristine
+                                               }"
+                                     >
                                     <label for="onHand">
                                         Quantity
                                     </label> 
-                                    <input type="text" name="onHand" class="form-control" id="onHand" ng-model="formOnHand" ng-pattern="/^\d+$/" required/>
+                                    <input type="text" 
+                                           name="onHand" 
+                                           class="form-control" 
+                                           id="onHand" 
+                                           placeholder="0"
+                                           ng-model="formOnHand" 
+                                           ng-pattern="/^\d+$/" 
+                                           required
+                                           />
                                     <p class="help-block" ng-hide="item.onHand.$valid">
                                         Needs to be an integer.
                                     </p>
                                 </div>
 
-                                <div class="form-group" ng-class="{'has-error': !item.needed.$valid}">
+                                <div class="form-group" 
+                                     ng-class="{
+                                               'has-error': !item.needed.$valid
+                                               }"
+                                     >
                                     <label for="needed">
                                         Needed
                                     </label> 
-                                    <input type="number" class="form-control" id="needed" name="needed" ng-model="formNeeded" ng-pattern="/\d+/" required/>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="needed" 
+                                           name="needed" 
+                                           placeholder="0"
+                                           ng-model="formNeeded" 
+                                           ng-pattern="/\d+/" 
+                                           required/>
                                     <p class="help-block" ng-hide="item.needed.$valid">
                                         Needs to be an integer.
                                     </p>
                                 </div>
 
-                                <button type="submit" class="btn" id="addSubmit" ng-show="item.needed.$valid && item.onHand.$valid && item.upc.$valid && !item.product.$pristine">
+                                <button type="submit" 
+                                        class="btn" 
+                                        id="addSubmit" 
+                                        ng-disabled="!(item.needed.$valid && item.upc.$valid && item.product.$valid)">
                                     Submit
                                 </button>
                             </form> 
@@ -107,59 +145,65 @@
                     Maintain
                 </th>
             </thead>
-            <tbody ng-controller="item">
-                <tr ng-repeat="item in list">
+            <tbody id="bootstrap-override" ng-controller="item">
+                <tr class="item-row" ng-repeat="item in list"
+                    ng-class="colorRows(item)">
 
-                    <div class="row-color" ng-class="{low: item.onHand < item.needed, 'running-low': item.onHand === item.needed, enough: item.onHand > item.needed}">
+                    <td class="upc" ng-cloak>
+                        {{ item.upc }}
+                    </td>
 
-                        <td class="upc" ng-cloak>
-                            {{ item.upc }}
-                        </td>
+                    <td class="product" ng-cloak>
+                        {{ item.product }}
+                    </td>
 
-                        <td class="product" ng-cloak>
-                            {{ item.product }}
-                        </td>
+                    <td class="quantity" ng-cloak>
+                        {{ item.onHand }}
+                    </td>
 
-                        <td class="quantity" ng-cloak>
-                            {{ item.onHand }}
-                        </td>
+                    <td class="needed" ng-cloak>
+                        {{ item.needed }}
+                    </td>
 
-                        <td class="needed" ng-cloak>
-                            {{ item.needed }}
-                        </td>
+                    <td class="maintain">
+                        <div class="btn-group"
+                             role="group">
+                            <button name="add" 
+                                    class="add btn btn-default"
+                                    type="button"
+                                    ng-click="sendAdd(item)">
+                                Add
+                            </button>
 
-                        <td class="maintain">
-                            <div class="btn-group"
-                                 role="group">
-                                <button name="add" 
-                                        class="add btn btn-default"
-                                        type="button"
-                                        ng-click="sendAdd(item)">
-                                    Add
-                                </button>
+                            <button name="sub" 
+                                    class="sub btn btn-default"
+                                    type="button"
+                                    ng-click="sendSub(item)"
+                                    >
+                                Subtract
+                            </button>
 
-                                <button name="sub" 
-                                        class="sub btn btn-default"
-                                        type="button"
-                                        ng-click="sendSub(item)"
-                                        >
-                                    Subtract
-                                </button>
+                            <button type="button" 
+                                    class="btn btn-default">
 
-                                <button type="button" 
-                                        class="btn btn-default"
-                                        type="button">
-
-                                    <span class="glyphicon glyphicon-trash">
-                                    </span>
-                                </button>
-                            </div> <!-- end .btn-group -->
-                        </td> <!-- end .maintain-->
-
-                    </div><!-- end .row-color -->
-
+                                <span class="glyphicon glyphicon-trash">
+                                </span>
+                            </button>
+                        </div> <!-- end .btn-group -->
+                    </td> <!-- end .maintain-->
                 </tr>
             </tbody>
         </table>
-    </div>
-</main>
+        <h4>Printable report</h4>
+        <form class="form-inline" method="get" action="report">
+            <div class="form-group">
+                <label for="low">Only low Quantity?</label>
+                <input type="checkbox" name="low" id="low" />
+            </div>
+            <button type="submit" class="btn btn-default btn-sm" 
+                    ng-click="printReport()">
+                Print Report
+            </button>
+        </form>
+    </div> <!-- end panel -->
+</main> <!-- end main -->

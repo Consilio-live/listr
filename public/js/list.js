@@ -21,6 +21,9 @@
 
     var app = angular.module("listr", [ 'ngRoute' ]);
     
+    /**
+     * Provides the hash routes for the single page application
+     */
     app.config(function ($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'resources/html/table.html',
@@ -28,8 +31,8 @@
         });
     });
 
-    app.controller('item', ['$scope', '$http', '$log',
-                            function ($scope, $http, $log) {
+    app.controller('item', ['$scope', '$http', '$log', '$window',
+                            function ($scope, $http, $log, $window) {
                                 
         // form variables
         $scope.formUPC = 0;
@@ -56,7 +59,12 @@
             });
             
         }); // end angular.element
-
+                                
+                                
+        ////////////////////////////////////////////////////////////
+        ///                 MAINTENANCE BUTTONS                  ///
+        ////////////////////////////////////////////////////////////
+                                
         /**
          * Send that an item's quantity has been incremented to
          * the database.
@@ -85,6 +93,17 @@
             });
         }; // end sendSub
                                 
+                                
+        $scope.addItem = function () {
+
+            console.log("clicked");
+            angular.element("#formModal").modal('hide');
+        }; // end addItem
+                                
+        ////////////////////////////////////////////////////////////
+        ///                 NGCLASS OBJECTS                      ///
+        ////////////////////////////////////////////////////////////
+        
         /**
          * The object to be used in the ngClass directive on a
          * div.row-color element. 
@@ -101,12 +120,6 @@
             
             return rowClasses;
         }; // end colorRows;
-                                
-        $scope.addItem = function () {
-
-            console.log("clicked");
-            angular.element("#formModal").modal('hide');
-        }; // end addItem
 
     }]); // end controller
 

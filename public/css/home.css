@@ -25,15 +25,15 @@ div#login-prompt button.btn-primary {
     outline: 0;
 }
 
-div.low {
+tbody#bootstrap-override tr.item-row.low {
     background-color: #ef9a9a;
 }
 
-div.enough {
+tbody#bootstrap-override tr.item-row.enough {
     background-color: #A5D6A7;
 }
 
-div.running-low {
+tbody#bootstrap-override tr.item-row.runningLow {
     background-color: #FFF59D;
 }
 
